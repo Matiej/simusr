@@ -19,7 +19,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public LoginUserResponse loginUser(LoginUserCommand command) {
-        AuthCommand authCommand = new AuthCommand(command.getUsername(), command.getUsername());
+        AuthCommand authCommand = new AuthCommand(command.getUsername(), command.getPassword());
         AuthResponse authResponse = userSecurityService.authorize(authCommand);
         UserEntity user = authResponse.getUser();
         Set<String> roles = Arrays.stream(user.getRoles().split(","))

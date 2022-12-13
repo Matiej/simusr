@@ -3,9 +3,12 @@ package com.ematiej.simusr.security;
 import com.ematiej.simusr.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class UserEntityDetails implements UserDetails {
@@ -13,7 +16,9 @@ public class UserEntityDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Arrays.stream(userEntity.getRoles().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -44,5 +49,9 @@ public class UserEntityDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
     }
 }
