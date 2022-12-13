@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,10 +18,10 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 @Tag(name = "Users API", description = "API designed to manipulate the object user.")
 //@SecurityRequirement(name = "springrecallbook-api_documentation")
-public class UserController {
+class UserController {
     private final UserService userService;
 
-    @PostMapping(name = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<LoginUserResponse> loginUser(@RequestBody @Valid RestLoginUser restLoginUser) {
         log.info("Request login for user: " + restLoginUser.getUsername());
         LoginUserResponse response = userService.loginUser(restLoginUser.toLoginUserCommand());
@@ -34,5 +31,10 @@ public class UserController {
                 .header("Message", "User authenticated successful")
                 .header(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, HttpMethod.POST.name())
                 .body(response);
+    }
+
+    @GetMapping(value = "/test")
+    String getTest() {
+        return "Test - only for auth users";
     }
 }
