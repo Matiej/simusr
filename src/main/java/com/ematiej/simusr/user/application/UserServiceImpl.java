@@ -28,7 +28,7 @@ class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .userId(user.getId())
                 .roles(roles)
-                .responseCookie(authResponse.getCookie())
+                .token(authResponse.getToken())
                 .build();
     }
 }

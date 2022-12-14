@@ -1,11 +1,11 @@
 package com.ematiej.simusr.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.ematiej.simusr.security.port.UserSecurityService;
 import com.ematiej.simusr.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,11 +23,23 @@ public class UserSecurityServiceImpl implements UserSecurityService {
     public AuthResponse authorize(AuthCommand command) {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(command.getUsername(), command.getPassword()));
+        UserEntityDetails principal = (UserEntityDetails) authenticate.getPrincipal();
+        UserEntity user = principal.getUserEntity();
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
-        UserEntityDetails principal = (UserEntityDetails) authenticate.getPrincipal();
-        return new AuthResponse(ResponseCookie.from("Maja", "sada").build(), principal.getUserEntity());
+        String jwtToken = generateJWTToken(command.getUsername(), user.getRoles());
+
+        return new AuthResponse(user, jwtToken);
+    }
+
+    private String generateJWTToken(String subjectUserName, String roles) {
+        Algorithm algorithm = Algorithm.HMAC256("secret_matiej");
+        return JWT.create()
+                .withSubject(subjectUserName)
+                .withIssuer("eMatiej")
+                .withClaim("ROLES", roles)
+                .sign(algorithm);
     }
 
     public boolean isOwnerOrAdmin(String objectOwner, UserDetails userDetails) {
