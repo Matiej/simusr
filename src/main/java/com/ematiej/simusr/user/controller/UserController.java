@@ -32,9 +32,4 @@ class UserController {
                 .header(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, HttpMethod.POST.name())
                 .body(response);
     }
-
-    @GetMapping(value = "/test")
-    String getTest() {
-        return "Test - only for auth users";
-    }
 }

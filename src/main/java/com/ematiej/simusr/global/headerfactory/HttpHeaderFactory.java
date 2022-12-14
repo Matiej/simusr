@@ -1,4 +1,4 @@
-package com.testaarosa.springRecallBookApp.globalHeaderFactory;
+package com.ematiej.simusr.global.headerfactory;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

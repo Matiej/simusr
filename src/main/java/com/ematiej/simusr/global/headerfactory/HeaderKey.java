@@ -1,4 +1,4 @@
-package com.testaarosa.springRecallBookApp.globalHeaderFactory;
+package com.ematiej.simusr.global.headerfactory;
 
 public enum HeaderKey {
     STATUS("Status"),
