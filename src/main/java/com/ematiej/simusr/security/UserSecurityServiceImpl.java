@@ -6,8 +6,6 @@ import com.ematiej.simusr.security.port.UserSecurityService;
 import com.ematiej.simusr.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

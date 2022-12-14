@@ -1,6 +1,5 @@
 package com.ematiej.simusr.user.application;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 
