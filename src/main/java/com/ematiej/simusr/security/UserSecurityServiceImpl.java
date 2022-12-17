@@ -2,6 +2,7 @@ package com.ematiej.simusr.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.ematiej.simusr.security.jwt.JwtService;
 import com.ematiej.simusr.security.port.UserSecurityService;
 import com.ematiej.simusr.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserSecurityServiceImpl implements UserSecurityService {
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
+
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Override
     public AuthResponse authorize(AuthCommand command) {
@@ -26,21 +29,11 @@ public class UserSecurityServiceImpl implements UserSecurityService {
         UserEntityDetails principal = (UserEntityDetails) authenticate.getPrincipal();
         UserEntity user = principal.getUserEntity();
 
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-
-        String jwtToken = generateJWTToken(command.getUsername(), user.getRoles());
+        String jwtToken = jwtService.generateJWTToken(command.getUsername(), user.getRoles());
 
         return new AuthResponse(user, jwtToken);
     }
 
-    private String generateJWTToken(String subjectUserName, String roles) {
-        Algorithm algorithm = Algorithm.HMAC256("secret_matiej");
-        return JWT.create()
-                .withSubject(subjectUserName)
-                .withIssuer("eMatiej")
-                .withClaim("ROLES", roles)
-                .sign(algorithm);
-    }
 
     public boolean isOwnerOrAdmin(String objectOwner, UserDetails userDetails) {
         return isAdmin(userDetails) || isOwner(objectOwner, userDetails);
