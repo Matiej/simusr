@@ -3,6 +3,7 @@ package com.ematiej.simusr.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -47,11 +48,16 @@ public class JwtService {
         JWTVerifier jwtVerifier = JWT.require(getAlgorithm())
                 .build();
         String subStringToken = subStringToken(token);
-        DecodedJWT decodedJWT = jwtVerifier.verify(subStringToken);
-        String roles = decodedJWT.getClaim(CLAIM).asString();
-        Set<? extends GrantedAuthority> authorities = getAuthorities(roles);
+        try {
+            DecodedJWT decodedJWT = jwtVerifier.verify(subStringToken);
+            String roles = decodedJWT.getClaim(CLAIM).asString();
+            Set<? extends GrantedAuthority> authorities = getAuthorities(roles);
 
-        return new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, authorities);
+            return new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, authorities);
+        } catch (JWTDecodeException e) {
+            throw new IllegalArgumentException("Wrong JWT token format!!");
+        }
+
     }
 
     private String subStringToken(String token) {

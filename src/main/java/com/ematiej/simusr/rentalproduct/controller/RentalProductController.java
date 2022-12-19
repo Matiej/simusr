@@ -33,7 +33,6 @@ import static com.ematiej.simusr.global.GlobalStatic.ROLE_USER;
 public class RentalProductController {
     private final RentalProductService rentalProductService;
 
-    @Secured(value = {ROLE_ADMIN, ROLE_USER})
     @GetMapping("/all")
     @Operation(summary = "Get all users", description = "Get all user from data base. Access only for admin")
     @ApiResponses({
@@ -47,7 +46,6 @@ public class RentalProductController {
                 .body(motorcycles);
     }
 
-    @Secured(value = {ROLE_ADMIN})
     @GetMapping("/init")
     @Operation(summary = "Init some products", description = "Initialize some example test motorcycle rental products")
     @ApiResponses({

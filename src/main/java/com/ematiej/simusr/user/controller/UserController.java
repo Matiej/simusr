@@ -64,7 +64,6 @@ class UserController {
                 .build();
     }
 
-    @Secured(value = {"ROLE_ADMIN"})
     @GetMapping
     @Operation(summary = "Get all users", description = "Get all user from data base. Access only for admin")
     @ApiResponses({

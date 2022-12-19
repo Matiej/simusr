@@ -6,27 +6,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ematiej.simusr.global.GlobalStatic.ROLE_ADMIN;
+import static com.ematiej.simusr.global.GlobalStatic.ROLE_USER;
+
 @Slf4j
 @RestController
-@RequestMapping(value = "/test")
-public class AuthTestController {
+@RequestMapping(value = "/aa_test")
+public class AnnotationAuthTest {
 
-    @GetMapping("/user")
+    @Secured(value = {ROLE_USER})
+    @GetMapping("/aa_user")
     String getTestUser() {
         log.info("USER TEST FOR AUTH");
-        return "1 - Test - only for auth users";
+        return "1 - Test - only for auth users with ANNOTATION!!!!";
     }
 
-    @GetMapping("/admin")
+    @Secured(value = {ROLE_ADMIN})
+    @GetMapping("/aa_admin")
     String getTestForAdmin() {
         log.info("ADMIN TEST FOR AUTH");
-        return "2 - Test - only for auth ADMINS";
+        return "2 - Test - only for auth ADMINS with ANNOTATION!!!!";
     }
-
-    @GetMapping("/useradmin")
-    String getTestForAdminOrUser() {
-        log.info("USER & ADMIN TEST FOR AUTH");
-        return "3 - Test - only for auth USER OR ADMINS";
-    }
-
 }
