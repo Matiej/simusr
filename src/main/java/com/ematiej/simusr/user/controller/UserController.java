@@ -3,6 +3,7 @@ package com.ematiej.simusr.user.controller;
 import com.ematiej.simusr.global.headerfactory.HeaderKey;
 import com.ematiej.simusr.user.application.CreateUserResponse;
 import com.ematiej.simusr.user.application.LoginUserResponse;
+import com.ematiej.simusr.user.application.UserResponse;
 import com.ematiej.simusr.user.application.port.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,16 +12,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-
 import java.net.URI;
+import java.util.List;
 
 import static com.ematiej.simusr.global.headerfactory.HttpHeaderFactory.getSuccessfulHeaders;
 
@@ -63,6 +62,20 @@ class UserController {
         return ResponseEntity.created(getUri(response.getId()))
                 .headers(getSuccessfulHeaders(HttpStatus.CREATED, HttpMethod.POST))
                 .build();
+    }
+
+    @Secured(value = {"ROLE_ADMIN"})
+    @GetMapping
+    @Operation(summary = "Get all users", description = "Get all user from data base. Access only for admin")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Operation finished successful")
+    })
+    ResponseEntity<List<UserResponse>> getAll() {
+        List<UserResponse> users = userService.getAll();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, HttpMethod.GET.name())
+                .header(HeaderKey.STATUS.getHeaderKeyLabel(), HttpStatus.OK.name())
+                .body(users);
     }
 
     private static URI getUri(Long id) {

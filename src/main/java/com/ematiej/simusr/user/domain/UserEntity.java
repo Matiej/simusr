@@ -25,7 +25,7 @@ public class UserEntity extends BaseEntity {
     public UserEntity(String username, String password, Set<UserRole> userRoles) {
         this.username = username;
         this.password = password;
-        this.roles = userRoles.stream().map(UserRole::name).collect(Collectors.joining(","));
+        this.roles = userRoles.stream().map(UserRole::getUserRole).collect(Collectors.joining(","));
 
     }
 }

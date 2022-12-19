@@ -7,11 +7,11 @@ import com.ematiej.simusr.user.application.port.UserService;
 import com.ematiej.simusr.user.database.UserRepository;
 import com.ematiej.simusr.user.domain.UserEntity;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,12 +29,12 @@ class UserServiceImpl implements UserService {
         UserEntity user = authResponse.getUser();
         Set<String> roles = Arrays.stream(user.getRoles().split(","))
                 .collect(Collectors.toSet());
-        return LoginUserResponse.builder()
-                .username(user.getUsername())
-                .userId(user.getId())
-                .roles(roles)
-                .token(authResponse.getToken())
-                .build();
+        return new LoginUserResponse(
+                user.getId(),
+                user.getUsername(),
+                roles,
+                authResponse.getToken());
+
     }
 
     @Override
@@ -47,6 +47,16 @@ class UserServiceImpl implements UserService {
         }
         UserEntity user = repository.save(userEntity);
         return CreateUserResponse.success(user);
+    }
+
+    @Override
+    public List<UserResponse> getAll() {
+        List<UserEntity> userEntities = repository.findAll();
+        return userEntities.stream().map(user -> new UserResponse(user.getId(), user.getUsername(), getRoles(user.getRoles()))).collect(Collectors.toList());
+    }
+
+    private Set<String> getRoles(String roles) {
+        return Arrays.stream(roles.split(",")).collect(Collectors.toSet());
     }
 
     private boolean checkUser(String user) {

@@ -14,7 +14,8 @@ public class SwaggerConfig {
 
     private static final String[] PUBLIC_PATH_TO_MACH = {
             "/test/**",
-            "/users/**"
+            "/users/**",
+            "/product/**"
     };
 
     private static final String ADMIN_PATH_TO_MAP = "/admin/**";
