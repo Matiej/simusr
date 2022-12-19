@@ -1,7 +1,5 @@
 package com.ematiej.simusr.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.ematiej.simusr.security.jwt.JwtService;
 import com.ematiej.simusr.security.port.UserSecurityService;
 import com.ematiej.simusr.user.domain.UserEntity;
@@ -10,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 

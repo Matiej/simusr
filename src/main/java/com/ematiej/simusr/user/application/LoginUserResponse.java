@@ -1,6 +1,8 @@
 package com.ematiej.simusr.user.application;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
