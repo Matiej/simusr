@@ -1,17 +1,19 @@
 package com.ematiej.simusr.user.application;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
-@Builder
-public class LoginUserResponse {
-    private Long userId;
-    private String username;
-    private Set<String> roles;
-//    @JsonIgnore
+@Setter
+@Getter
+@NoArgsConstructor
+public class LoginUserResponse extends UserResponse {
     private String token;
 
+    public LoginUserResponse(Long userId, String username, Set<String> roles, String token) {
+        super(userId, username, roles);
+        this.token = token;
+    }
 }

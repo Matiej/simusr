@@ -2,11 +2,9 @@ package com.ematiej.simusr.user.controller;
 
 import com.ematiej.simusr.user.application.CreateUserCommand;
 import com.ematiej.simusr.user.domain.UserRole;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

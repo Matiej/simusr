@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(
+        securedEnabled = true
+)
 public class SecurityConfig {
     private final UserRepository repository;
     private final JwtTokenFilter jwtTokenFilter;
@@ -61,6 +65,21 @@ public class SecurityConfig {
             "/users/**"
     };
 
+    private final static String[] GET_AUTH_ADMIN = {
+            "/users/**",
+            "/test/admin/**",
+            "/product/init/**"
+    };
+
+    private final static String[] GET_AUTH_USER_OR_ADMIN = {
+            "/test/useradmin/**",
+            "/product/all/**"
+    };
+
+    private final static String[] GET_AUTH_USER = {
+            "/test/user/**",
+    };
+
     //todo do wywalenia
     @EventListener(ApplicationReadyEvent.class)
     public void saveUser() {
@@ -90,6 +109,9 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, POST_AUTH_ALL_USERS_PATTERNS).permitAll()
                 .mvcMatchers(AUTH_DOC_SWAGGER_PATTERNS).permitAll()
+                .mvcMatchers(HttpMethod.GET, GET_AUTH_USER_OR_ADMIN).hasAnyRole("USER", "ADMIN")
+                .mvcMatchers(HttpMethod.GET, GET_AUTH_ADMIN).hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.GET, GET_AUTH_USER).hasRole("USER")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
