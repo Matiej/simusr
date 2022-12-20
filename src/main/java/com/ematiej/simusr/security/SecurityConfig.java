@@ -106,6 +106,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.cors();
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, POST_AUTH_ALL_USERS_PATTERNS).permitAll()
                 .mvcMatchers(AUTH_DOC_SWAGGER_PATTERNS).permitAll()
