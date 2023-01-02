@@ -1,5 +1,7 @@
 package com.ematiej.simusr.global.exceptionhandler;
 
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.io.IOException;
@@ -60,6 +63,17 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
                 .body(exceptionResponse);
     }
 
+    public final ResponseEntity<Object> handleJWTTokenFilterException(Exception rex, HttpServletRequest request){
+        String message = "Wrong JWT Token: ";
+        log.error(message, rex);
+        HttpStatus serviceUnavailable = HttpStatus.BAD_REQUEST;
+        ExceptionHandlerResponse exceptionResponse = getExceptionHandlerResponse(rex, message, serviceUnavailable);
+        return ResponseEntity.status(serviceUnavailable)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getExceptionHeaders(serviceUnavailable.name(), rex.getMessage()))
+                .body(exceptionResponse);
+    }
+
     @ExceptionHandler({UsernameNotFoundException.class})
     public final ResponseEntity<Object> handleUsernameNotFoundException(RuntimeException rex, WebRequest request) {
         String message = "User not found => ";
@@ -72,7 +86,7 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
                 .body(exceptionResponse);
     }
 
-    @ExceptionHandler({AccessDeniedException.class})
+    @ExceptionHandler({AccessDeniedException.class, TokenExpiredException.class, SignatureVerificationException.class})
     public final ResponseEntity<Object> handleAccessDeniedExceptionException(RuntimeException rex, WebRequest request) {
         Principal userPrincipal = request.getUserPrincipal();
         String message = "Forbidden action for user:  " + (userPrincipal == null ? "Unknown user" : userPrincipal.getName());
