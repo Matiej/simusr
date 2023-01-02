@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +45,7 @@ public class JwtService {
                 .sign(algorithm);
     }
 
-    public UsernamePasswordAuthenticationToken getUsernameAndPasswordToken(String token) {
+    public UsernamePasswordAuthenticationToken getUsernameAndPasswordToken(String token) throws IllegalArgumentException {
         JWTVerifier jwtVerifier = JWT.require(getAlgorithm())
                 .build();
         String subStringToken = subStringToken(token);
@@ -54,8 +55,8 @@ public class JwtService {
             Set<? extends GrantedAuthority> authorities = getAuthorities(roles);
 
             return new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), null, authorities);
-        } catch (JWTDecodeException e) {
-            throw new IllegalArgumentException("Wrong JWT token format!!");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Wrong JWT token: " + e.getMessage());
         }
 
     }
