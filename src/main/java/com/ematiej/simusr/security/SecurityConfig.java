@@ -83,9 +83,10 @@ public class SecurityConfig {
     //todo do wywalenia
     @EventListener(ApplicationReadyEvent.class)
     public void saveUser() {
-        UserEntity user1 = new UserEntity("maciek@maciek.pl", getBcryptPasswordEncoder().encode("pass123"), Set.of(UserRole.ADMIN));
-        UserEntity user2 = new UserEntity("secretary@maciek.pl", getBcryptPasswordEncoder().encode("pass123"), Set.of(UserRole.USER));
-        List<UserEntity> userEntities = repository.saveAll(Set.of(user1, user2));
+        UserEntity user1 = new UserEntity("admin@ma.pl", getBcryptPasswordEncoder().encode("pass123"), Set.of(UserRole.ADMIN));
+        UserEntity user2 = new UserEntity("usr@ma.pl", getBcryptPasswordEncoder().encode("pass123"), Set.of(UserRole.USER));
+        UserEntity user3 = new UserEntity("super@ma.pl", getBcryptPasswordEncoder().encode("pass123"), Set.of(UserRole.ADMIN, UserRole.USER));
+        List<UserEntity> userEntities = repository.saveAll(Set.of(user1, user2, user3));
         log.info("Users has been saved successful: " + userEntities.stream().map(UserEntity::getUsername).collect(Collectors.joining(" ; ")));
     }
 
