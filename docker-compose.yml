@@ -1,0 +1,50 @@
+services:
+  my-sql:
+    image: mysql:latest
+    environment:
+      MYSQL_PASSWORD: pass123
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: simusr_schema
+      MYSQL_USER: admin
+    ports:
+      - "3307:3307"
+    volumes:
+      - dbstore:/var/lib/mysql
+    networks:
+      - spring-mysql-network
+
+  backend:
+    build: ./simusr-BE
+    container_name: simusrBE
+    ports:
+      - "8080:8080"
+    depends_on:
+      - my-sql
+    networks:
+      - spring-mysql-network
+
+  frontend:
+    build: ./simusr-fe-jwt
+    container_name: simusrFE
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - spring-mysql-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - "8081:81"
+    networks:
+      - spring-mysql-network
+
+networks:
+  spring-mysql-network:
+    external: true
+volumes:
+  dbstore:
+
